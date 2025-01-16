@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PASSWORD</title>
+    <style>
+      @font-face {
+        font-family: "Clouts!";
+        src: url("./font/Clouts!.ttf") format("truetype");
+      }
+
+      body {
+        font-family: "Clouts!";
+        background-image: url("https://i.pinimg.com/736x/47/b5/28/47b5283ae19901f0f9e7b9c5c3781769.jpg");
+        background-size: cover;
+        background-position: center;
+        color: #545151;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+
+      .container {
+        text-align: center;
+        background-color: rgba(217, 254, 255, 0.7);
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+      }
+
+      h1 {
+        font-size: 36px;
+        color: #3e5d6b;
+        margin-bottom: 20px;
+      }
+
+      #pin-display {
+        font-size: 30px;
+        padding: 10px;
+        margin-bottom: 20px;
+        background-color: #fff;
+        color: #000;
+        border: none;
+        border-radius: 10px;
+        width: 100%;
+        max-width: 300px;
+        text-align: center;
+      }
+
+      .button-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        justify-items: center;
+      }
+
+      .pin-button {
+        font-size: 24px;
+        padding: 15px;
+        background-color: #416e82;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        width: 60px;
+        height: 60px;
+      }
+
+      .pin-button:hover {
+        background-color: #607d8b;
+      }
+
+      .pin-button:active {
+        background-color: #3e5d6b;
+      }
+
+      .message {
+        margin-top: 20px;
+        font-size: 18px;
+        color: #3e5d6b;
+      }
+
+      #play-music-button {
+        font-size: 20px;
+        background-color: #416e82;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 8px;
+        margin-top: 20px;
+      }
+
+      #play-music-button:hover {
+        background-color: #607d8b;
+      }
+    </style>
+  </head>
+  <body>
+    <iframe src="music.html" style="display: none;"></iframe>
+
+    <div class="container">
+      <h1>MASUKAN PIN</h1>
+      <input type="text" id="pin-display" disabled placeholder="" />
+
+      <div class="button-container">
+        <!-- Tombol angka PIN -->
+        <button class="pin-button" onclick="addPin('1')">1</button>
+        <button class="pin-button" onclick="addPin('2')">2</button>
+        <button class="pin-button" onclick="addPin('3')">3</button>
+        <button class="pin-button" onclick="addPin('4')">4</button>
+        <button class="pin-button" onclick="addPin('5')">5</button>
+        <button class="pin-button" onclick="addPin('6')">6</button>
+        <button class="pin-button" onclick="addPin('7')">7</button>
+        <button class="pin-button" onclick="addPin('8')">8</button>
+        <button class="pin-button" onclick="addPin('9')">9</button>
+        <button class="pin-button" onclick="addPin('0')">0</button>
+      </div>
+
+      <p id="message" class="message"></p>
+
+    
+    </div>
+
+    <script>
+      let enteredPin = "";
+      const messageElement = document.getElementById("message");
+      const pinDisplay = document.getElementById("pin-display");
+
+      // Fungsi untuk menambahkan angka ke PIN
+      function addPin(number) {
+        if (enteredPin.length < 4) {
+          enteredPin += number;
+          pinDisplay.value = enteredPin;
+
+          if (enteredPin.length === 4) {
+            checkPin(); // Verifikasi PIN setelah 4 digit
+          }
+        }
+      }
+
+      // Fungsi untuk memverifikasi PIN
+      function checkPin() {
+        if (enteredPin === "1234") {
+          messageElement.textContent = "PIN Benar!";
+          messageElement.style.color = "green";
+          setTimeout(function () {
+            window.location.href = "game.html"; // Arahkan ke halaman permainan setelah 2 detik
+          }, 2000);
+        } else {
+          messageElement.textContent = "PIN Salah, coba lagi!";
+          messageElement.style.color = "red";
+          enteredPin = ""; // Reset PIN jika salah
+          pinDisplay.value = "";
+        }
+      }
+
+   
+    </script>
+  </body>
+</html>

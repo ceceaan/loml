@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Chat</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #e5ddd5;
+        }
+
+        .chat-container {
+            max-width: 375px;
+            margin: 0 auto;
+            background: url(https://i.pinimg.com/736x/3a/d2/43/3ad243c9a216a7abfbc5edd1667d46b9.jpg);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .main-header {
+            background-color: #aec8e1;
+            color: rgb(226, 239, 254);
+            text-align: center;
+            padding: 15px 10px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .chat-header {
+            background-color: rgba(28, 108, 214, 0.454);
+            color: white;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chat-header img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .chat-header .chat-info {
+            flex-grow: 1;
+        }
+
+        .chat-header .chat-info h2 {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .chat-header .chat-info p {
+            margin: 0;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.489);
+        }
+
+        .chat-box {
+            flex-grow: 1;
+            padding: 10px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .chat-message {
+            max-width: 70%;
+            padding: 8px 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            position: relative;
+            word-wrap: break-word;
+        }
+
+        .user {
+            align-self: flex-end;
+            background-color: #a5def291;
+        }
+
+        .bot {
+            align-self: flex-start;
+            background-color: #ffffff;
+            border: 1px solid #e6e6e6;
+        }
+
+        .typing-indicator {
+            align-self: flex-start;
+            font-size: 14px;
+            color: #999;
+            font-style: italic;
+        }
+
+        .chat-input-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            border-top: 1px solid #ddd;
+            background-color: #f7f7f7;
+            padding: 10px;
+        }
+
+        .chat-input button {
+            background-color: #d5efec;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .chat-input button:hover {
+            background-color: #064C47;
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Header -->
+    <div class="main-header">My Fav Message</div>
+
+    <div class="chat-container">
+        <!-- Chat Header -->
+        <div class="chat-header">
+            <img src="https://i.pinimg.com/originals/78/0a/31/780a31b1ded6a538c67dae6eacc47512.jpg" alt="Profile Picture">
+            <div class="chat-info">
+                <h2>Cean</h2>
+                <p>Online</p>
+            </div>
+        </div>
+
+        <!-- Chat Box -->
+        <div class="chat-box" id="chatBox"></div>
+
+        <!-- Chat Input -->
+        <div class="chat-input-container">
+            <button id="replyButton" onclick="sendReply()">Balas</button>
+        </div>
+    </div>
+<audio id="background-music" src="taylorslut.mp3" loop preload="auto"></audio>
+
+<script>
+  const backgroundMusic = document.getElementById("background-music");
+
+  // Fungsi untuk menyimpan status dan posisi musik
+  function saveMusicState() {
+    localStorage.setItem("musicPlaying", !backgroundMusic.paused);
+    localStorage.setItem("musicTime", backgroundMusic.currentTime);
+  }
+
+  // Fungsi untuk memuat status dan posisi musik
+  function loadMusicState() {
+    const musicPlaying = localStorage.getItem("musicPlaying") === "true";
+    const musicTime = parseFloat(localStorage.getItem("musicTime")) || 0;
+
+    backgroundMusic.currentTime = musicTime; // Set waktu dari posisi terakhir
+    if (musicPlaying) {
+      backgroundMusic.play().catch(() => {
+        console.log("Autoplay dicegah oleh browser.");
+      });
+    }
+  }
+
+  // Jalankan fungsi saat halaman dimuat
+  window.onload = loadMusicState;
+
+  // Simpan posisi musik sebelum halaman ditutup
+  window.addEventListener("beforeunload", saveMusicState);
+
+  // Simpan posisi musik setiap detik
+  backgroundMusic.addEventListener("timeupdate", saveMusicState);
+
+
+        const chatBox = document.getElementById('chatBox');
+        const replyButton = document.getElementById('replyButton');
+        const messages = [
+            { text: "maybe you haven’t noticed that aku GA PERNAH SAMA SEKALI BOSEN SAMA KAMU! Aku beruntung banget bisa punya kamu masa hehe kayak no live without theomara, because you’re the reason I feel so love and happy." },
+            { text: "kamu juga harus tauu aku ga pernah bosen sm kamu, i really really reallyyyyhajajaa LIKE UU KAYA SESUKA ITU WOY HAHAHA 😩😩" },
+            { text: "HARUSS, KALAU KAMU BOSEN SAMAA AKU, AKU TIMPUK RUMAH MU" },
+            { text: "SEREM BGT KOCAK" },
+            { text: "baru kali ini aku dpt pacar yg sefrekuensi" }
+        ];
+
+        let currentIndex = 0; 
+
+        function loadMessage(index, senderType) {
+            if (index >= messages.length) {
+                replyButton.style.display = "none"; // Hide reply button when all messages are displayed
+                return;
+            }
+
+            const message = messages[index];
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${senderType}`;
+            messageDiv.innerText = `${message.text}`;
+            chatBox.appendChild(messageDiv);
+
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            const typingIndicator = document.createElement('div');
+            typingIndicator.className = 'typing-indicator';
+            typingIndicator.id = 'typingIndicator';
+            typingIndicator.innerText = "Typing...";
+            chatBox.appendChild(typingIndicator);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        function sendReply() {
+            loadMessage(currentIndex, "user"); // Load Cean's message
+            currentIndex++;
+
+            // Show typing indicator
+            setTimeout(() => {
+                showTypingIndicator();
+
+                // Delay for Deleted Account's response
+                setTimeout(() => {
+                    hideTypingIndicator();
+
+                    if (currentIndex < messages.length) {
+                        loadMessage(currentIndex, "bot"); // Automatically load Deleted Account's response
+                        currentIndex++;
+                    } else {
+                        // Redirect when the last reply is sent
+                        window.location.href = "nextpage.html"; // Change this to your desired URL
+                    }
+                }, 1500); // Delay of 1500ms for response
+            }, 500); // Initial delay before typing indicator
+        }
+
+        // Initial load
+        loadMessage(currentIndex, "bot"); // Start with Deleted Account's first message
+        currentIndex++;
+    </script>
+</body>
+</html>

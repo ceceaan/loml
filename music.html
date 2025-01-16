@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Music</title>
+</head>
+<body>
+ <iframe src="music.html" style="display: none;"></iframe>
+
+
+  <script>
+    const backgroundMusic = document.getElementById("background-music");
+
+    function loadMusicState() {
+      const musicPlaying = localStorage.getItem("musicPlaying") === "true";
+      const musicTime = parseFloat(localStorage.getItem("musicTime")) || 0;
+
+      backgroundMusic.currentTime = musicTime;
+      if (musicPlaying) {
+        backgroundMusic.play().catch((err) => {
+          console.log("Autoplay dicegah oleh browser:", err);
+        });
+      }
+    }
+
+    function saveMusicState() {
+      localStorage.setItem("musicPlaying", !backgroundMusic.paused);
+      localStorage.setItem("musicTime", backgroundMusic.currentTime);
+    }
+
+    window.addEventListener("load", loadMusicState);
+    window.addEventListener("beforeunload", saveMusicState);
+  </script>
+</body>
+</html>
